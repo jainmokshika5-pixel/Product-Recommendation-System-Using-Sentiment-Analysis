@@ -17,12 +17,15 @@ class NLPProcessor:
         self.lemmatizer = WordNetLemmatizer()
         self.stop_words = set(stopwords.words('english'))
         
-        # Product categories and their keywords
+        # Enhanced product categories matching your datasets
         self.categories = {
-            'Laptop': ['laptop', 'computer', 'pc', 'notebook', 'macbook', 'chromebook'],
-            'Smartphone': ['phone', 'smartphone', 'mobile', 'iphone', 'android', 'cell'],
-            'Smartwatch': ['watch', 'smartwatch', 'wearable', 'fitness tracker', 'apple watch'],
-            'Speakers': ['speaker', 'headphone', 'earphone', 'audio', 'sound', 'bluetooth speaker', 'wireless speaker']
+            'Laptops': ['laptop', 'computer', 'pc', 'notebook', 'macbook', 'chromebook', 'gaming laptop'],
+            'Smartphones': ['phone', 'smartphone', 'mobile', 'iphone', 'android', 'cell', 'oneplus', 'samsung'],
+            'Wearables': ['watch', 'smartwatch', 'wearable', 'fitness tracker', 'apple watch', 'fitness band'],
+            'Audio': ['speaker', 'headphone', 'earphone', 'audio', 'sound', 'bluetooth speaker', 'wireless speaker', 'earbuds', 'headset'],
+            'Smart Home': ['tv', 'television', 'smart tv', 'streaming', 'home automation', 'smart speaker', 'alexa'],
+            'Appliances': ['cooler', 'ac', 'air conditioner', 'refrigerator', 'washing machine', 'microwave'],
+            'Other': ['accessories', 'charger', 'cable', 'case', 'power bank', 'mount', 'stand']
         }
         
         # Feature keywords for extraction

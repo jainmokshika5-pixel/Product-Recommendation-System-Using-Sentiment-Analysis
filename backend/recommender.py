@@ -93,21 +93,30 @@ class ProductRecommender:
         if product_category.lower() == target_category.lower():
             return 1.0
         
-        # Partial matches
+        # Enhanced category similarities with better mapping
         category_similarities = {
-            'smartphone': ['phone', 'mobile'],
-            'laptop': ['computer', 'pc', 'notebook'],
-            'smartwatch': ['watch', 'wearable'],
-            'speakers': ['headphone', 'audio', 'earphone']
+            'smartphone': ['phone', 'mobile', 'smartphones'],
+            'laptop': ['computer', 'pc', 'notebook', 'laptops'],
+            'smartwatch': ['watch', 'wearable', 'wearables'],
+            'audio': ['speakers', 'headphone', 'earphone', 'earbuds', 'headphones'],
+            'smart home': ['tv', 'television', 'cooler', 'ac', 'appliances'],
+            'other': ['accessories', 'miscellaneous']
         }
         
-        target_lower = target_category.lower()
-        product_lower = product_category.lower()
+        target_lower = target_category.lower().strip()
+        product_lower = product_category.lower().strip()
         
+        # Direct match
+        if target_lower == product_lower:
+            return 1.0
+        
+        # Check similarity mappings
         for main_cat, aliases in category_similarities.items():
-            if (target_lower == main_cat or target_lower in aliases) and \
-               (product_lower == main_cat or product_lower in aliases):
-                return 0.8
+            target_matches = target_lower == main_cat or target_lower in aliases
+            product_matches = product_lower == main_cat or product_lower in aliases
+            
+            if target_matches and product_matches:
+                return 0.9  # High similarity score
         
         return 0.1  # Very low score for mismatched categories
     

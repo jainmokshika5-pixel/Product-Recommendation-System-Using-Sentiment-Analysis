@@ -165,63 +165,182 @@ class DatabaseManager:
         print(f"✅ Loaded {len(sample_products)} sample products and {len(sample_reviews)} sample reviews")
     
     def load_data_from_csv(self):
-        """Load data from CSV files if available"""
-        products_path = os.path.join(self.data_folder, self.products_file)
-        reviews_path = os.path.join(self.data_folder, self.reviews_file)
+        """Load data from the comprehensive datasets"""
+        datasets_loaded = False
         
-        if not os.path.exists(products_path) or not os.path.exists(reviews_path):
+        # Load electronics_balanced_10k.csv
+        electronics_path = "data/electronics_balanced_10k.csv"
+        if os.path.exists(electronics_path):
+            try:
+                df = pd.read_csv(electronics_path)
+                print(f"📱 Found electronics dataset with {len(df)} products")
+                
+                # Process products from electronics dataset
+                products_data = []
+                reviews_data = []
+                
+                for idx, row in df.iterrows():
+                    # Create product entry
+                    product_id = idx + 1
+                    
+                    # Map categories to standardized names
+                    category_map = {
+                        'Mobile': 'Smartphones',
+                        'Laptop': 'Laptops',
+                        'Headphone': 'Audio',
+                        'Speaker': 'Audio', 
+                        'TV': 'Smart Home',
+                        'Watch': 'Wearables',
+                        'Cooler/AC': 'Appliances',
+                        'Other': 'Other'
+                    }
+                    
+                    standardized_category = category_map.get(row['category'], row['category'])
+                    
+                    products_data.append({
+                        'id': product_id,
+                        'name': str(row['product_name'])[:100],  # Truncate long names
+                        'category': standardized_category,
+                        'price': float(row['product_price']),
+                        'description': str(row['Summary']) if pd.notna(row['Summary']) else 'No description available'
+                    })
+                    
+                    # Create review entry
+                    review_text = f"{row['Review']} {row['Summary']}" if pd.notna(row['Summary']) else str(row['Review'])
+                    
+                    # Map sentiment and calculate score
+                    sentiment = str(row['Sentiment']).lower()
+                    if sentiment == 'positive':
+                        base_score = 7.0 + (float(row['Rate']) - 3) * 0.5  # 7-9 range
+                    elif sentiment == 'negative':
+                        base_score = 2.0 + (float(row['Rate']) - 1) * 0.5  # 2-4 range  
+                    else:
+                        base_score = 4.5 + (float(row['Rate']) - 3) * 0.3  # 4.5-6 range
+                    
+                    sentiment_score = max(1.0, min(10.0, base_score))
+                    
+                    reviews_data.append({
+                        'product_id': product_id,
+                        'review_text': review_text,
+                        'sentiment': sentiment,
+                        'sentiment_score': sentiment_score
+                    })
+                
+                datasets_loaded = True
+                print(f"✅ Processed {len(products_data)} products from electronics dataset")
+                
+            except Exception as e:
+                print(f"⚠️ Error loading electronics dataset: {e}")
+        
+        # Load product_reviews.csv 
+        reviews_path = "data/product_reviews.csv"
+        if os.path.exists(reviews_path):
+            try:
+                df_reviews = pd.read_csv(reviews_path)
+                print(f"📝 Found product reviews dataset with {len(df_reviews)} reviews")
+                
+                # Get unique products from reviews dataset
+                unique_products = df_reviews.drop_duplicates(subset=['product'])
+                start_id = len(products_data) + 1 if datasets_loaded else 1
+                
+                # Add products from reviews dataset
+                for idx, row in unique_products.iterrows():
+                    product_id = start_id + len([p for p in unique_products.itertuples() if p.Index <= idx])
+                    
+                    products_data.append({
+                        'id': product_id,
+                        'name': str(row['product']),
+                        'category': str(row['category']),
+                        'price': 50000.0,  # Default price since not provided
+                        'description': f"High-quality {row['category'].lower()} product with advanced features"
+                    })
+                    
+                    # Add all reviews for this product
+                    product_reviews = df_reviews[df_reviews['product'] == row['product']]
+                    for _, review_row in product_reviews.iterrows():
+                        sentiment = str(review_row['sentiment']).lower()
+                        rating = float(review_row['rating'])
+                        
+                        # Calculate sentiment score from rating
+                        if sentiment == 'positive':
+                            sentiment_score = 6.0 + rating * 0.8  # 6-10 range
+                        elif sentiment == 'negative':
+                            sentiment_score = 1.0 + rating * 0.6  # 1-4 range
+                        else:
+                            sentiment_score = 4.0 + rating * 0.4  # 4-6 range
+                        
+                        reviews_data.append({
+                            'product_id': product_id,
+                            'review_text': str(review_row['review_text']),
+                            'sentiment': sentiment,
+                            'sentiment_score': max(1.0, min(10.0, sentiment_score))
+                        })
+                
+                datasets_loaded = True
+                print(f"✅ Added {len(unique_products)} products from reviews dataset")
+                
+            except Exception as e:
+                print(f"⚠️ Error loading product reviews dataset: {e}")
+        
+        if not datasets_loaded:
+            print("❌ No comprehensive datasets found")
             return False
         
         try:
-            # Load products CSV
-            products_df = pd.read_csv(products_path)
-            required_product_cols = ['id', 'name', 'category', 'price', 'description']
-            if not all(col in products_df.columns for col in required_product_cols):
-                print(f"❌ Products CSV missing required columns: {required_product_cols}")
-                return False
-            
-            # Load reviews CSV
-            reviews_df = pd.read_csv(reviews_path)
-            required_review_cols = ['product_id', 'review_text', 'sentiment']
-            if not all(col in reviews_df.columns for col in required_review_cols):
-                print(f"❌ Reviews CSV missing required columns: {required_review_cols}")
-                return False
-            
             # Insert data into database
             conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
             
             # Clear existing data
-            conn.execute('DELETE FROM reviews')
-            conn.execute('DELETE FROM products')
+            cursor.execute('DELETE FROM reviews')
+            cursor.execute('DELETE FROM products')
             
             # Insert products
-            products_df.to_sql('products', conn, if_exists='append', index=False)
-            
-            # Process reviews and add sentiment scores
-            if 'sentiment_score' not in reviews_df.columns:
-                # Generate sentiment scores based on sentiment labels
-                sentiment_score_map = {'positive': 8.0, 'neutral': 5.0, 'negative': 2.5}
-                reviews_df['sentiment_score'] = reviews_df['sentiment'].map(sentiment_score_map)
+            for product in products_data:
+                cursor.execute('''
+                    INSERT INTO products (id, name, category, price, description)
+                    VALUES (?, ?, ?, ?, ?)
+                ''', (product['id'], product['name'], product['category'], 
+                      product['price'], product['description']))
             
             # Insert reviews
-            reviews_df.to_sql('reviews', conn, if_exists='append', index=False)
+            for review in reviews_data:
+                cursor.execute('''
+                    INSERT INTO reviews (product_id, review_text, sentiment, sentiment_score)
+                    VALUES (?, ?, ?, ?)
+                ''', (review['product_id'], review['review_text'], 
+                      review['sentiment'], review['sentiment_score']))
             
             conn.commit()
             conn.close()
             
             self.is_data_loaded = True
-            print(f"✅ Loaded {len(products_df)} products and {len(reviews_df)} reviews from CSV files")
+            print(f"✅ Database loaded successfully!")
+            print(f"📊 Total products: {len(products_data)}")
+            print(f"📝 Total reviews: {len(reviews_data)}")
+            
+            # Print category breakdown
+            category_counts = {}
+            for product in products_data:
+                cat = product['category']
+                category_counts[cat] = category_counts.get(cat, 0) + 1
+            
+            print(f"📈 Categories loaded:")
+            for category, count in sorted(category_counts.items()):
+                print(f"   {category}: {count} products")
+            
             return True
             
         except Exception as e:
-            print(f"❌ Error loading CSV data: {e}")
+            print(f"❌ Error inserting data into database: {e}")
             return False
     
     def load_data(self):
-        """Load data from CSV files or use sample data as fallback"""
-        # Try to load from CSV first
+        """Load data from comprehensive datasets or use sample data as fallback"""
+        # Try to load from comprehensive datasets first
         if not self.load_data_from_csv():
-            # Fallback to sample data
+            # Fallback to sample data only if comprehensive datasets fail
+            print("📁 Comprehensive datasets not available, using sample data...")
             self.load_sample_data()
     
     def get_all_products(self) -> List[Dict[str, Any]]:
