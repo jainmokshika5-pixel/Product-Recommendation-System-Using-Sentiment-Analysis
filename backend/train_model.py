@@ -106,20 +106,6 @@ def load_and_preprocess_data():
         except Exception as e:
             print(f"⚠️ Error loading product reviews dataset: {e}")
     
-    # Load original sample dataset as fallback
-    sample_path = "data/sample_Dataset-SA.csv"
-    if os.path.exists(sample_path):
-        try:
-            df_sample = pd.read_csv(sample_path)
-            df_sample['review_text'] = df_sample['review_text']
-            df_sample['sentiment'] = df_sample['sentiment'].str.lower()
-            df_sample['category'] = 'Electronics'  # Default category for sample data
-            df_sample = df_sample[['review_text', 'sentiment', 'category']].dropna()
-            datasets.append(df_sample)
-            print(f"✅ Loaded {len(df_sample)} samples from sample dataset")
-        except Exception as e:
-            print(f"⚠️ Error loading sample dataset: {e}")
-    
     if not datasets:
         print("❌ No training data found")
         print("📁 Please ensure data files are in the data/ folder")
