@@ -76,17 +76,38 @@ class SentimentAnalyzer:
         self.vocab_size = 10000
         self.is_model_loaded = False
         
-        # Initialize with simple rule-based fallback
+        # Initialize with comprehensive rule-based fallback for all categories
         self.positive_words = {
+            # General positive
             'excellent', 'amazing', 'great', 'good', 'fantastic', 'wonderful', 
             'awesome', 'perfect', 'love', 'best', 'outstanding', 'brilliant',
-            'superb', 'impressive', 'satisfied', 'happy', 'pleased', 'recommend'
+            'superb', 'impressive', 'satisfied', 'happy', 'pleased', 'recommend',
+            'nice', 'fabulous', 'classy', 'simply', 'worth', 'mind-blowing',
+            'terrific', 'super', 'blazing', 'incredible', 'refreshing',
+            
+            # Performance related
+            'fast', 'smooth', 'responsive', 'efficient', 'powerful', 'reliable',
+            'stable', 'durable', 'comfortable', 'convenient', 'easy', 'clear',
+            
+            # Quality related
+            'premium', 'quality', 'sturdy', 'solid', 'robust', 'sleek', 'elegant',
+            'beautiful', 'stunning', 'crystal', 'sharp', 'vivid', 'bright'
         }
         
         self.negative_words = {
+            # General negative
             'terrible', 'awful', 'bad', 'horrible', 'worst', 'hate', 'disappointing',
             'poor', 'useless', 'broken', 'defective', 'failed', 'disappointed',
-            'frustrated', 'annoying', 'waste', 'regret', 'problem', 'issue'
+            'frustrated', 'annoying', 'waste', 'regret', 'problem', 'issue',
+            'horrible', 'pathetic', 'garbage', 'trash', 'worthless', 'overpriced',
+            
+            # Performance related
+            'slow', 'laggy', 'unresponsive', 'freezing', 'crashing', 'heating',
+            'overheating', 'draining', 'loud', 'noisy', 'uncomfortable', 'heavy',
+            
+            # Quality related
+            'cheap', 'flimsy', 'fragile', 'unstable', 'unreliable', 'scratched',
+            'damaged', 'faulty', 'malfunctioning', 'stopped', 'not working'
         }
     
     def create_simple_tokenizer(self):
@@ -95,14 +116,42 @@ class SentimentAnalyzer:
         # For demo, we'll use a simple word-to-index mapping
         vocab = {'<PAD>': 0, '<UNK>': 1}
         
-        # Add common words
+        # Add common words covering all categories
         common_words = [
+            # Basic words
             'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
             'of', 'with', 'by', 'this', 'that', 'it', 'is', 'was', 'are', 'were',
+            'have', 'has', 'had', 'do', 'does', 'did', 'can', 'could', 'will', 'would',
+            
+            # Sentiment words
             'good', 'bad', 'great', 'excellent', 'poor', 'amazing', 'terrible',
-            'love', 'hate', 'like', 'dislike', 'best', 'worst', 'phone', 'laptop',
-            'camera', 'battery', 'screen', 'display', 'sound', 'quality',
-            'fast', 'slow', 'easy', 'hard', 'cheap', 'expensive', 'value', 'price'
+            'love', 'hate', 'like', 'dislike', 'best', 'worst', 'awesome', 'wonderful',
+            'fantastic', 'horrible', 'perfect', 'disappointing', 'satisfied', 'frustrated',
+            
+            # Electronics/Mobile
+            'phone', 'mobile', 'smartphone', 'iphone', 'android', 'camera', 'battery',
+            'screen', 'display', 'charger', 'charging', 'oneplus', 'samsung', 'apple',
+            
+            # Laptop/Computer
+            'laptop', 'computer', 'pc', 'processor', 'ram', 'storage', 'ssd', 'keyboard',
+            'trackpad', 'performance', 'cooling', 'ports', 'gaming', 'hp', 'dell', 'asus',
+            
+            # Audio/Headphones
+            'headphones', 'earbuds', 'speaker', 'sound', 'audio', 'music', 'bass',
+            'noise', 'cancellation', 'microphone', 'bluetooth', 'wireless', 'boat',
+            
+            # Smart Home/Wearables
+            'smartwatch', 'watch', 'fitness', 'tracking', 'health', 'heart', 'sleep',
+            'steps', 'smart', 'home', 'alexa', 'google', 'wifi', 'connection',
+            
+            # TV/Entertainment
+            'tv', 'television', 'streaming', 'netflix', 'remote', 'channel', 'volume',
+            'resolution', 'picture', 'video',
+            
+            # General product attributes
+            'quality', 'price', 'value', 'money', 'design', 'build', 'material',
+            'fast', 'slow', 'easy', 'hard', 'cheap', 'expensive', 'comfortable',
+            'durable', 'reliable', 'working', 'broken', 'defective', 'recommend'
         ]
         
         for i, word in enumerate(common_words, 2):

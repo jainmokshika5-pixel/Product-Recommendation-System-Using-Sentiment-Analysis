@@ -72,35 +72,89 @@ def create_tokenizer(texts, vocab_size=10000):
     return vocab
 
 def load_and_preprocess_data():
-    """Load and preprocess training data"""
-    data_path = "data/Dataset-SA.csv"
+    """Load and preprocess training data from multiple sources"""
+    datasets = []
     
-    if not os.path.exists(data_path):
-        print(f"❌ Training data not found at {data_path}")
-        print("📁 Please place Dataset-SA.csv in the data/ folder")
-        print("   Expected columns: review_text, sentiment")
+    # Load electronics_balanced_10k.csv
+    electronics_path = "data/electronics_balanced_10k.csv"
+    if os.path.exists(electronics_path):
+        try:
+            df_electronics = pd.read_csv(electronics_path)
+            # Combine Review and Summary columns for better context
+            df_electronics['review_text'] = df_electronics['Review'].fillna('') + ' ' + df_electronics['Summary'].fillna('')
+            df_electronics['sentiment'] = df_electronics['Sentiment'].str.lower()
+            df_electronics['category'] = df_electronics['category']
+            df_electronics = df_electronics[['review_text', 'sentiment', 'category']].dropna()
+            datasets.append(df_electronics)
+            print(f"✅ Loaded {len(df_electronics)} samples from electronics dataset")
+            print(f"📊 Electronics categories: {df_electronics['category'].unique()}")
+        except Exception as e:
+            print(f"⚠️ Error loading electronics dataset: {e}")
+    
+    # Load product_reviews.csv
+    reviews_path = "data/product_reviews.csv"
+    if os.path.exists(reviews_path):
+        try:
+            df_reviews = pd.read_csv(reviews_path)
+            df_reviews['review_text'] = df_reviews['review_text']
+            df_reviews['sentiment'] = df_reviews['sentiment'].str.lower()
+            df_reviews['category'] = df_reviews['category']
+            df_reviews = df_reviews[['review_text', 'sentiment', 'category']].dropna()
+            datasets.append(df_reviews)
+            print(f"✅ Loaded {len(df_reviews)} samples from product reviews dataset")
+            print(f"📊 Product review categories: {df_reviews['category'].unique()}")
+        except Exception as e:
+            print(f"⚠️ Error loading product reviews dataset: {e}")
+    
+    # Load original sample dataset as fallback
+    sample_path = "data/sample_Dataset-SA.csv"
+    if os.path.exists(sample_path):
+        try:
+            df_sample = pd.read_csv(sample_path)
+            df_sample['review_text'] = df_sample['review_text']
+            df_sample['sentiment'] = df_sample['sentiment'].str.lower()
+            df_sample['category'] = 'Electronics'  # Default category for sample data
+            df_sample = df_sample[['review_text', 'sentiment', 'category']].dropna()
+            datasets.append(df_sample)
+            print(f"✅ Loaded {len(df_sample)} samples from sample dataset")
+        except Exception as e:
+            print(f"⚠️ Error loading sample dataset: {e}")
+    
+    if not datasets:
+        print("❌ No training data found")
+        print("📁 Please ensure data files are in the data/ folder")
         return None, None, None, None, None
     
     try:
-        # Load data
-        df = pd.read_csv(data_path)
-        
-        if 'review_text' not in df.columns or 'sentiment' not in df.columns:
-            print("❌ Required columns 'review_text' and 'sentiment' not found")
-            return None, None, None, None, None
+        # Combine all datasets
+        df = pd.concat(datasets, ignore_index=True)
         
         # Clean data
         df = df.dropna(subset=['review_text', 'sentiment'])
+        df = df[df['review_text'].str.strip() != '']
         
         # Map sentiment labels to numbers
         sentiment_map = {'negative': 0, 'neutral': 1, 'positive': 2}
-        if not all(sentiment in sentiment_map for sentiment in df['sentiment'].unique()):
-            print("❌ Sentiment labels should be 'positive', 'neutral', 'negative'")
-            return None, None, None, None, None
         
+        # Handle any case variations and filter valid sentiments
+        df = df[df['sentiment'].isin(sentiment_map.keys())]
         df['sentiment_label'] = df['sentiment'].map(sentiment_map)
         
-        # Split data
+        # Print dataset statistics
+        print(f"\n📈 Dataset Statistics:")
+        print(f"Total samples: {len(df)}")
+        print(f"Categories: {sorted(df['category'].unique())}")
+        print(f"Sentiment distribution:")
+        sentiment_counts = df['sentiment'].value_counts()
+        for sentiment, count in sentiment_counts.items():
+            print(f"  {sentiment}: {count} ({count/len(df)*100:.1f}%)")
+        
+        print(f"\nCategory distribution:")
+        category_counts = df['category'].value_counts()
+        for category, count in category_counts.items():
+            print(f"  {category}: {count} ({count/len(df)*100:.1f}%)")
+        
+        # Split data ensuring stratification across both sentiment and category
         X_train, X_test, y_train, y_test = train_test_split(
             df['review_text'].values,
             df['sentiment_label'].values,
@@ -112,7 +166,7 @@ def load_and_preprocess_data():
         # Create tokenizer
         tokenizer = create_tokenizer(X_train)
         
-        print(f"✅ Loaded {len(df)} samples")
+        print(f"\n✅ Final dataset loaded successfully!")
         print(f"📊 Train: {len(X_train)}, Test: {len(X_test)}")
         print(f"📝 Vocabulary size: {len(tokenizer)}")
         
