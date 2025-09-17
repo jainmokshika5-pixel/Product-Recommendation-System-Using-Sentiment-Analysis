@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* AI Product Recommendation System Design System */
+
+@layer base {
+  :root {
+    /* Core brand colors */
+    --background: 240 20% 99%;
+    --foreground: 240 10% 3.9%;
+    
+    /* AI/Tech themed colors */
+    --primary: 260 84% 60%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 260 100% 70%;
+    
+    /* Card and surface colors */
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --card-hover: 240 20% 98%;
+    
+    /* Interactive elements */
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    
+    /* Sentiment colors */
+    --sentiment-positive: 142 71% 45%;
+    --sentiment-positive-foreground: 0 0% 98%;
+    --sentiment-neutral: 43 96% 56%;
+    --sentiment-neutral-foreground: 240 10% 3.9%;
+    --sentiment-negative: 0 84% 60%;
+    --sentiment-negative-foreground: 0 0% 98%;
+    
+    /* System colors */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 260 84% 60%;
+    
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(260 84% 60%), hsl(280 90% 70%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(240 20% 98%));
+    --gradient-hero: linear-gradient(180deg, hsl(240 20% 99%), hsl(260 40% 96%));
+    
+    /* Shadows */
+    --shadow-card: 0 4px 6px -1px hsl(240 5% 64% / 0.1), 0 2px 4px -1px hsl(240 5% 64% / 0.06);
+    --shadow-hover: 0 10px 15px -3px hsl(260 84% 60% / 0.1), 0 4px 6px -2px hsl(260 84% 60% / 0.05);
+    --shadow-elevated: 0 25px 50px -12px hsl(260 84% 60% / 0.25);
+    
+    /* Animation durations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --card-hover: 240 9% 6%;
+    
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    
+    --primary: 260 84% 65%;
+    --primary-foreground: 240 10% 3.9%;
+    --primary-glow: 260 100% 75%;
+    
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 260 84% 65%;
+    
+    --gradient-primary: linear-gradient(135deg, hsl(260 84% 65%), hsl(280 90% 75%));
+    --gradient-card: linear-gradient(145deg, hsl(240 10% 3.9%), hsl(240 9% 6%));
+    --gradient-hero: linear-gradient(180deg, hsl(240 10% 3.9%), hsl(260 20% 8%));
+    
+    --shadow-card: 0 4px 6px -1px hsl(240 5% 0% / 0.3), 0 2px 4px -1px hsl(240 5% 0% / 0.2);
+    --shadow-hover: 0 10px 15px -3px hsl(260 84% 65% / 0.2), 0 4px 6px -2px hsl(260 84% 65% / 0.1);
+    --shadow-elevated: 0 25px 50px -12px hsl(260 84% 65% / 0.4);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}

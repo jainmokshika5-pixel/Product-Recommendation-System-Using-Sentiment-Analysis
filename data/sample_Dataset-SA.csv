@@ -1,0 +1,41 @@
+product_id,review_text,sentiment,sentiment_score
+1,"Amazing camera quality and battery life is excellent. Love the titanium design!",positive,8.5
+1,"Great phone but very expensive. Camera is top notch though.",neutral,6.5
+1,"Best iPhone ever! Fast performance and beautiful display.",positive,9.0
+1,"Price is too high for what you get. Battery drains fast.",negative,3.5
+2,"Incredible camera with 200MP sensor. S Pen is very useful for productivity.",positive,8.8
+2,"Good phone but battery drains quickly with heavy usage.",neutral,6.0
+2,"Love the large screen and AI features. Very impressive!",positive,8.2
+2,"Too expensive and bulky. Camera is good but not worth the price.",negative,4.0
+3,"Blazing fast performance with M3 chip. Display is stunning and battery lasts all day.",positive,9.2
+3,"Excellent build quality and performance but quite expensive.",neutral,7.0
+3,"Perfect for video editing and development work. Highly recommended!",positive,8.9
+3,"Overpriced for what it offers. Good performance but not groundbreaking.",negative,4.5
+4,"Great laptop for the price. Good performance and portable design.",positive,7.5
+4,"Nice laptop but fan gets loud under heavy load. Build quality is good.",neutral,6.8
+4,"Solid choice for work and study. Battery life could be better.",neutral,6.5
+4,"Poor build quality and overheats easily. Not recommended.",negative,2.8
+5,"Excellent fitness tracking and health features. Battery lasts 2 days easily.",positive,8.7
+5,"Good smartwatch but limited customization compared to competitors.",neutral,6.8
+5,"Love the design and seamless integration with iPhone. Highly recommended!",positive,8.4
+5,"Expensive for a smartwatch. Battery life is disappointing.",negative,3.8
+6,"Best noise canceling headphones! Sound quality is incredible and comfortable to wear.",positive,9.1
+6,"Great sound but price is high. Noise canceling works very well.",neutral,7.2
+6,"Amazing for music and calls. Battery life is excellent too!",positive,8.6
+6,"Uncomfortable for long sessions and sound quality is overrated.",negative,3.2
+7,"Excellent camera with AI features. Pure Android experience is refreshing.",positive,8.3
+7,"Good phone but lacks some premium features compared to competitors.",neutral,6.7
+7,"Great value for money. Camera AI is impressive.",positive,7.8
+7,"Battery life is poor and phone gets hot during charging.",negative,3.6
+8,"Excellent keyboard and build quality. Perfect for business use.",positive,8.1
+8,"Good laptop but heavy to carry around. Performance is solid.",neutral,6.9
+8,"Reliable and durable. Great for productivity work.",positive,7.9
+8,"Expensive and outdated design. Performance is average.",negative,4.2
+9,"Great fitness tracking and battery life. Comfortable to wear all day.",positive,8.0
+9,"Good smartwatch but interface could be more intuitive.",neutral,6.5
+9,"Excellent value for money. Many useful health features.",positive,7.7
+9,"Poor app ecosystem and limited third-party support.",negative,4.1
+10,"Outstanding noise cancellation and sound quality. Premium feel.",positive,8.9
+10,"Good headphones but very expensive. Comfort could be better.",neutral,7.1
+10,"Excellent for travel and work calls. Battery life is great.",positive,8.4
+10,"Overpriced and heavy. Sound quality doesn't justify the cost.",negative,3.9
