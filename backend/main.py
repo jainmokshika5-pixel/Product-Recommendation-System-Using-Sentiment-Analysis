@@ -24,7 +24,7 @@ app = FastAPI(title="AI Product Recommendation API", version="1.0.0")
 # CORS middleware for frontend communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080", "http://localhost:3000", "http://localhost:5173"],
+    allow_origins=["http://localhost:8080", "http://localhost:8081", "http://localhost:3000", "http://localhost:5173", "http://192.168.0.182:8080", "http://192.168.0.182:8081"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -79,7 +79,7 @@ async def startup_event():
         sentiment_analyzer.load_model()
         
         print("✅ Backend initialized successfully!")
-        print("📊 Database loaded with sample products and reviews")
+        print("📊 Database loaded with real product data from CSV files")
         print("🤖 ML models ready for inference")
         
     except Exception as e:

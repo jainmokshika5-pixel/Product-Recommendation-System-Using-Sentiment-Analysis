@@ -4,7 +4,6 @@ Handles query analysis, category detection, and feature extraction
 """
 
 import re
-import string
 from typing import List, Dict, Any
 import nltk
 from nltk.corpus import stopwords
@@ -19,10 +18,10 @@ class NLPProcessor:
         
         # Enhanced product categories matching your datasets
         self.categories = {
-            'Laptops': ['laptop', 'computer', 'pc', 'notebook', 'macbook', 'chromebook', 'gaming laptop'],
-            'Smartphones': ['phone', 'smartphone', 'mobile', 'iphone', 'android', 'cell', 'oneplus', 'samsung'],
-            'Wearables': ['watch', 'smartwatch', 'wearable', 'fitness tracker', 'apple watch', 'fitness band'],
-            'Audio': ['speaker', 'headphone', 'earphone', 'audio', 'sound', 'bluetooth speaker', 'wireless speaker', 'earbuds', 'headset'],
+            'Laptops': ['laptop', 'laptops', 'computer', 'computers', 'pc', 'notebook', 'notebooks', 'macbook', 'chromebook', 'gaming laptop'],
+            'Smartphones': ['smartphone', 'smartphones', 'phone', 'phones', 'mobile phone', 'mobile phones', 'mobile', 'mobiles', 'iphone', 'android phone', 'cell phone', 'oneplus', 'samsung phone'],
+            'Wearables': ['watch', 'watches', 'smartwatch', 'smartwatches', 'wearable', 'wearables', 'fitness tracker', 'apple watch', 'fitness band'],
+            'Audio': ['speaker', 'speakers', 'headphone', 'headphones', 'earphone', 'earphones', 'audio', 'sound', 'bluetooth speaker', 'wireless speaker', 'earbuds', 'headset', 'headsets', 'wireless headphone', 'wireless headphones'],
             'Smart Home': ['tv', 'television', 'smart tv', 'streaming', 'home automation', 'smart speaker', 'alexa'],
             'Appliances': ['cooler', 'ac', 'air conditioner', 'refrigerator', 'washing machine', 'microwave'],
             'Other': ['accessories', 'charger', 'cable', 'case', 'power bank', 'mount', 'stand']
@@ -81,27 +80,30 @@ class NLPProcessor:
         Detect product category from query
         Returns (category, confidence_score)
         """
-        query_lower = query.lower()
+        query_lower = query.lower().strip()
         category_scores = {}
         
         for category, keywords in self.categories.items():
             score = 0
             for keyword in keywords:
-                if keyword in query_lower:
+                # Use word boundaries to avoid partial matches like "phone" in "earphones"
+                pattern = r'\b' + re.escape(keyword) + r'\b'
+                if re.search(pattern, query_lower):
                     # Exact match gets higher score
-                    if keyword == query_lower.strip():
+                    if keyword == query_lower:
                         score += 2.0
                     else:
                         score += 1.0
             
             if score > 0:
-                category_scores[category] = score / len(keywords)
+                category_scores[category] = score
         
         if not category_scores:
             return "General", 0.5
         
         best_category = max(category_scores, key=category_scores.get)
-        confidence = min(category_scores[best_category], 1.0)
+        max_score = category_scores[best_category]
+        confidence = min(max_score / 2.0, 1.0)  # Normalize confidence
         
         return best_category, confidence
     

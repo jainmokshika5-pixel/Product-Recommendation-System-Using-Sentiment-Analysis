@@ -35,84 +35,65 @@ interface LocationState {
 }
 
 export default function Results() {
+  console.log('Results component rendering...');
+  
   const location = useLocation();
   const state = location.state as LocationState | null;
 
+  console.log('Results page loaded, location:', location);
+  console.log('Results page state:', state);
+
   if (!state) {
-    return <Navigate to="/query" replace />;
+    console.log('No state found, redirecting to query page');
+    return (
+      <div className="min-h-screen bg-gradient-hero py-8">
+        <div className="container max-w-6xl mx-auto px-4">
+          <Card className="bg-gradient-card shadow-card border-0 p-8 text-center">
+            <h2 className="text-xl font-semibold mb-4">No Search Results</h2>
+            <p className="text-muted-foreground mb-4">
+              Please go back to the search page and try again.
+            </p>
+            <Button asChild variant="outline">
+              <Link to="/query">
+                Back to Search
+              </Link>
+            </Button>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   const { query, analysis, recommendations, totalProducts } = state;
 
-  // Use real API data if available, otherwise fallback to mock data
-  const products = recommendations || [
-    {
-      id: 1,
-      name: "Apple iPhone 15 Pro (128GB) - Natural Titanium",
-      category: "Smartphone",
-      price: 134900,
-      originalPrice: 139900,
-      description: "A17 Pro chip with 6-core GPU, Advanced camera system, Action Button",
-      sentiment_score: 8.5,
-      sentiment_label: "positive" as const,
-      explanation: "Highly rated for camera and performance",
-      rating: 4.4,
-      reviewCount: 2847,
-      deliveryInfo: "FREE delivery by Tomorrow",
-      offers: ["Bank Offer", "Exchange Offer"],
-      image: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=300&h=300&fit=crop"
-    },
-    {
-      id: 2,
-      name: "Apple MacBook Pro (14-inch, M3, 8GB RAM, 512GB SSD)",
-      category: "Laptop", 
-      price: 169900,
-      originalPrice: 199900,
-      description: "M3 chip with 8-core CPU, 10-core GPU, 14-inch Liquid Retina XDR display",
-      sentiment_score: 9.1,
-      sentiment_label: "positive" as const,
-      explanation: "Excellent performance and battery life",
-      rating: 4.6,
-      reviewCount: 1923,
-      deliveryInfo: "FREE delivery by Tomorrow",
-      offers: ["Bank Offer", "No Cost EMI"],
-      image: "https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=300&h=300&fit=crop"
-    },
-    {
-      id: 3,
-      name: "Samsung Galaxy S24+ 5G (256GB) - Onyx Black",
-      category: "Smartphone",
-      price: 89999,
-      originalPrice: 99999,
-      description: "50MP Triple Camera, 6.7-inch Dynamic AMOLED 2X Display, 4900mAh Battery",
-      sentiment_score: 8.2,
-      sentiment_label: "positive" as const,
-      explanation: "Great display and camera quality",
-      rating: 4.3,
-      reviewCount: 3521,
-      deliveryInfo: "FREE delivery by Tomorrow",
-      offers: ["Exchange Offer", "Bank Offer"],
-      image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=300&h=300&fit=crop"
-    }
-  ];
+  // Use only real API data from backend
+  const products = recommendations || [];
+  
+  // Debug logging
+  console.log('Results page state:', { query, analysis, recommendations, totalProducts });
+  console.log('Products count:', products.length);
 
-  const getPriceColor = (price: number) => {
+  const getPriceColor = (price: number | undefined) => {
+    if (!price) return "text-muted-foreground";
     if (price < 50000) return "text-sentiment-positive";
     if (price < 100000) return "text-sentiment-neutral"; 
     return "text-sentiment-negative";
   };
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number | undefined) => {
+    if (!price) return 'Price not available';
     return `₹${price.toLocaleString('en-IN')}`;
   };
 
-  const calculateDiscount = (price: number, originalPrice: number) => {
+  const calculateDiscount = (price: number | undefined, originalPrice: number | undefined) => {
+    if (!price || !originalPrice || originalPrice <= price) return 0;
     return Math.round(((originalPrice - price) / originalPrice) * 100);
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-hero py-8">
-      <div className="container max-w-6xl mx-auto px-4">
+  try {
+    return (
+      <div className="min-h-screen bg-gradient-hero py-8">
+        <div className="container max-w-6xl mx-auto px-4">
         {/* Query Summary */}
         <Card className="bg-gradient-card shadow-card border-0 mb-8">
           <CardContent className="p-6">
@@ -168,18 +149,25 @@ export default function Results() {
         </div>
 
         {/* Products Grid */}
-        <div className="grid gap-4">
-          {products.map((product, index) => (
+        {products.length > 0 ? (
+          <div className="grid gap-4">
+            {products.map((product, index) => (
             <Card key={product.id} className="bg-gradient-card shadow-card hover:shadow-hover transition-all border-0 overflow-hidden">
               <div className="flex gap-4 p-4">
                 {/* Product Image */}
                 <div className="flex-shrink-0">
                   <div className="w-32 h-32 bg-muted rounded-lg overflow-hidden">
-                    <img 
-                      src={product.image} 
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                    />
+                    {product.image ? (
+                      <img 
+                        src={product.image} 
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                        No Image
+                      </div>
+                    )}
                   </div>
                 </div>
                 
@@ -204,16 +192,16 @@ export default function Results() {
                     {product.name}
                   </h3>
                   
-                  {/* Rating and Reviews */}
+                  {/* Sentiment Score */}
                   <div className="flex items-center gap-3 mb-2">
                     <div className="flex items-center gap-1">
                       <div className="flex items-center">
                         <span className="text-sm font-medium text-white bg-green-600 px-2 py-1 rounded">
-                          {product.rating} ★
+                          {product.sentiment_score?.toFixed(1) || 'N/A'} ★
                         </span>
                       </div>
                       <span className="text-sm text-muted-foreground">
-                        ({product.reviewCount.toLocaleString()} reviews)
+                        {product.sentiment_label || 'neutral'} sentiment
                       </span>
                     </div>
                   </div>
@@ -223,31 +211,12 @@ export default function Results() {
                     <span className={`text-2xl font-bold ${getPriceColor(product.price)}`}>
                       {formatPrice(product.price)}
                     </span>
-                    {product.originalPrice && product.originalPrice > product.price && (
-                      <>
-                        <span className="text-sm text-muted-foreground line-through">
-                          {formatPrice(product.originalPrice)}
-                        </span>
-                        <span className="text-sm font-medium text-green-600">
-                          {calculateDiscount(product.price, product.originalPrice)}% off
-                        </span>
-                      </>
-                    )}
                   </div>
                   
-                  {/* Delivery Info */}
-                  <p className="text-sm text-green-600 font-medium mb-2">
-                    {product.deliveryInfo}
+                  {/* Recommendation Explanation */}
+                  <p className="text-sm text-blue-600 font-medium mb-2">
+                    {product.explanation}
                   </p>
-                  
-                  {/* Offers */}
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {product.offers.map((offer, index) => (
-                      <Badge key={index} variant="outline" className="text-xs text-orange-600 border-orange-200">
-                        {offer}
-                      </Badge>
-                    ))}
-                  </div>
                   
                   {/* Description */}
                   <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
@@ -289,7 +258,22 @@ export default function Results() {
               </div>
             </Card>
           ))}
-        </div>
+          </div>
+        ) : (
+          <Card className="bg-gradient-card shadow-card border-0 p-8 text-center">
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-muted-foreground">No Products Found</h3>
+              <p className="text-muted-foreground">
+                We couldn't find any products matching your query. Try adjusting your search terms.
+              </p>
+              <Button asChild variant="outline">
+                <Link to="/query">
+                  Try Another Search
+                </Link>
+              </Button>
+            </div>
+          </Card>
+        )}
 
         {/* Back to Search */}
         <div className="text-center mt-8">
@@ -301,5 +285,25 @@ export default function Results() {
         </div>
       </div>
     </div>
-  );
+    );
+  } catch (error) {
+    console.error('Error in Results component:', error);
+    return (
+      <div className="min-h-screen bg-gradient-hero py-8">
+        <div className="container max-w-6xl mx-auto px-4">
+          <Card className="bg-gradient-card shadow-card border-0 p-8 text-center">
+            <h2 className="text-xl font-semibold mb-4">Error Loading Results</h2>
+            <p className="text-muted-foreground mb-4">
+              There was an error loading the results. Please try again.
+            </p>
+            <Button asChild variant="outline">
+              <Link to="/query">
+                Back to Search
+              </Link>
+            </Button>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 }

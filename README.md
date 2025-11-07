@@ -1,205 +1,288 @@
-# AI-Powered Product Recommendation System
+# 🤖 AI-Powered Product Recommendation System
 
-A complete full-stack application that uses advanced sentiment analysis and natural language processing to provide intelligent product recommendations. Built with React, TypeScript, and FastAPI with CNN+BiLSTM machine learning models.
+An intelligent product recommendation system that combines sentiment analysis, natural language processing, and machine learning to provide personalized product recommendations based on user queries and reviews.
 
-## 🎯 Features
+![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)
+![React](https://img.shields.io/badge/React-18.3-61DAFB.svg)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C.svg)
 
-### Frontend (React + Tailwind CSS)
-- **Clean, professional UI** with responsive design
-- **Home Page**: Project overview and feature highlights
-- **Query Page**: Natural language product search interface
-- **Results Page**: Recommended products with sentiment scores
-- **Dashboard**: Analytics and sentiment distribution charts  
-- **Review Analysis**: Individual review sentiment analysis tool
+## 🌟 Features
 
-### Backend (FastAPI + Python)
-- **NLP Processing**: Category detection and feature extraction
-- **Sentiment Analysis**: CNN+BiLSTM deep learning model
-- **Product Ranking**: Intelligent scoring and recommendation system
-- **RESTful APIs**: Clean endpoints for all functionality
+### Core Functionality
+- **🔍 Intelligent Query Analysis**: NLP-powered query understanding to extract product categories and features
+- **💬 Sentiment Analysis**: Advanced CNN+BiLSTM model for accurate sentiment classification (92% accuracy)
+- **🎯 Smart Recommendations**: Multi-factor recommendation engine considering sentiment, features, and user preferences
+- **📊 Real-time Analytics**: Interactive dashboard with sentiment distribution and product insights
+- **🔄 Multi-Model Support**: Includes RNN and 1D CNN implementations for comparison
 
-### AI/ML Pipeline
-- **Text Preprocessing**: Tokenization, stopword removal, lemmatization
-- **Feature Extraction**: spaCy/NLTK keyword detection
-- **Deep Learning Models**: CNN+BiLSTM for sentiment classification
-- **Recommendation Engine**: Multi-factor scoring algorithm
+### Machine Learning Models
+1. **CNN+BiLSTM Sentiment Model** (Primary)
+   - 92.25% validation accuracy
+   - Trained on 12,253 product reviews
+   - Handles positive, negative, and neutral sentiments
 
-## 🚀 Quick Start
+2. **1D CNN Model** (Alternative)
+   - Multi-task learning (sentiment, rating, category prediction)
+   - Parallel processing for faster inference
+   - Early stopping to prevent overfitting
 
-### Prerequisites
-- Node.js 16+ and npm
-- Python 3.8+ with pip
-- Git
-
-### Quick Start (Frontend Only)
-
-```bash
-# 1. Install frontend dependencies
-npm install
-
-# 2. Start the frontend development server
-npm run dev
-```
-
-The application will be available at `http://localhost:8080` with sample data.
-
-### Full System Setup (Frontend + Backend)
-
-```bash
-# 1. Install frontend dependencies
-npm install
-
-# 2. Set up Python backend
-cd backend
-python -m venv venv
-source venv/bin/activate   # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-
-# 3. Start the FastAPI server
-uvicorn main:app --reload --port 8000
-
-# 4. In a new terminal, start the frontend
-npm run dev
-
-# 5. (Optional) Train custom model with your data
-python train_model.py
-```
-
-### URLs
-- **Frontend**: http://localhost:8080
-- **Backend API**: http://localhost:8000
-- **API Documentation**: http://localhost:8000/docs
+3. **RNN Model** (Experimental)
+   - Bidirectional LSTM architecture
+   - Multi-head attention mechanism
+   - Multi-task learning capabilities
 
 ## 📁 Project Structure
 
 ```
-/
-├── src/                          # React frontend source
-│   ├── components/              # Reusable UI components
-│   ├── pages/                   # Application pages
-│   ├── hooks/                   # Custom React hooks
-│   └── lib/                     # Utilities and helpers
-├── backend/                     # FastAPI backend (to be added)
-│   ├── models/                  # ML models and training
-│   ├── data/                    # Dataset storage
-│   ├── routers/                 # API route handlers
-│   └── main.py                  # FastAPI application
-├── public/                      # Static assets
-└── requirements.txt             # Python dependencies
+├── backend/
+│   ├── main.py                      # FastAPI server
+│   ├── sentiment_model.py           # CNN+BiLSTM model
+│   ├── cnn1d_product_model.py       # 1D CNN model
+│   ├── rnn_product_model.py         # RNN model
+│   ├── train_model.py               # Model training script
+│   ├── nlp_utils.py                 # NLP processing utilities
+│   ├── recommender.py               # Recommendation engine
+│   ├── database.py                  # Database management
+│   └── models/                      # Trained model files
+├── data/
+│   ├── electronics_balanced_10k.csv # Electronics dataset (11,253 reviews)
+│   └── product_reviews.csv          # Product reviews dataset (1,000 reviews)
+├── src/
+│   ├── pages/
+│   │   ├── Dashboard.tsx            # Analytics dashboard
+│   │   ├── Query.tsx                # Query input interface
+│   │   ├── Results.tsx              # Recommendation results
+│   │   └── ReviewAnalysis.tsx       # Review sentiment analysis
+│   └── components/                  # Reusable UI components
+└── README.md
 ```
 
-## 🎨 Design System
+## 🚀 Getting Started
 
-The application features a beautiful, modern design system with:
+### Prerequisites
 
-- **AI-themed color palette**: Purple gradients with semantic color tokens
-- **Sentiment visualization**: Color-coded badges (green/yellow/red)
-- **Smooth animations**: Hover effects and transitions
-- **Responsive layout**: Works perfectly on desktop and mobile
-- **Accessibility**: Proper contrast ratios and semantic HTML
+- Python 3.9+
+- Node.js 16+
+- npm or yarn
 
-## 🔧 Tech Stack
+### Installation
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/yourusername/ai-product-recommendation.git
+cd ai-product-recommendation
+```
+
+2. **Install Python dependencies**
+```bash
+pip install -r requirements.txt
+```
+
+3. **Install Node.js dependencies**
+```bash
+npm install
+# or
+yarn install
+```
+
+4. **Train the sentiment model** (Optional - pre-trained model included)
+```bash
+cd backend
+python train_model.py
+```
+
+### Running the Application
+
+#### Option 1: Run Backend and Frontend Separately
+
+**Start the Backend Server:**
+```bash
+cd backend
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+**Start the Frontend Development Server:**
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+#### Option 2: Run Both Simultaneously
+```bash
+npm run start:full
+```
+
+The application will be available at:
+- **Frontend**: http://localhost:5173
+- **Backend API**: http://localhost:8000
+- **API Documentation**: http://localhost:8000/docs
+
+## 📊 Dataset Information
+
+### Electronics Balanced Dataset
+- **Size**: 11,253 reviews
+- **Categories**: Mobile, Watch, Laptop, TV, Cooler/AC, Headphone, Speaker, Other
+- **Sentiment Distribution**: 81% Positive, 14% Negative, 5% Neutral
+- **Features**: Product name, price, rating, review text, category, price range
+
+### Product Reviews Dataset
+- **Size**: 1,000 reviews
+- **Categories**: Smartphones, Wearables, Smart Home, Audio, Laptops
+- **Features**: Review text, sentiment, rating, feature mentions, attributes
+
+## 🔧 API Endpoints
+
+### Health Check
+```bash
+GET /
+GET /health
+```
+
+### Query Analysis
+```bash
+POST /analyze_query
+Content-Type: application/json
+
+{
+  "query": "I need a smartphone with good battery life"
+}
+```
+
+### Sentiment Analysis
+```bash
+POST /analyze_review
+Content-Type: application/json
+
+{
+  "review_text": "This product is amazing! Great quality and fast delivery."
+}
+```
+
+### Product Recommendations
+```bash
+POST /recommend_products
+Content-Type: application/json
+
+{
+  "query": "laptop for gaming with good graphics"
+}
+```
+
+### Get Categories
+```bash
+GET /categories
+```
+
+## 🧠 Model Performance
+
+### CNN+BiLSTM Sentiment Model
+| Metric | Negative | Neutral | Positive | Overall |
+|--------|----------|---------|----------|---------|
+| Precision | 0.91 | 0.54 | 0.96 | 0.93 |
+| Recall | 0.81 | 0.67 | 0.96 | 0.92 |
+| F1-Score | 0.86 | 0.60 | 0.96 | 0.92 |
+| **Accuracy** | - | - | - | **92.25%** |
+
+### Training Details
+- **Training Samples**: 9,802
+- **Test Samples**: 2,451
+- **Vocabulary Size**: 8,261 words
+- **Epochs**: 10
+- **Optimizer**: Adam (lr=0.001)
+- **Architecture**: Embedding → CNN → BiLSTM → Attention → Dense
+
+## 🛠️ Technology Stack
+
+### Backend
+- **FastAPI**: Modern, fast web framework for building APIs
+- **PyTorch**: Deep learning framework for model training and inference
+- **Pandas**: Data manipulation and analysis
+- **Scikit-learn**: Machine learning utilities
+- **NLTK**: Natural language processing
 
 ### Frontend
-- **React 18**: Modern React with hooks and context
-- **TypeScript**: Type-safe development
+- **React 18**: UI library
+- **TypeScript**: Type-safe JavaScript
+- **Vite**: Fast build tool
 - **Tailwind CSS**: Utility-first CSS framework
-- **Shadcn/UI**: Beautiful, accessible UI components
-- **Lucide React**: Consistent icon system
-- **React Router**: Client-side routing
+- **Shadcn/ui**: Beautiful UI components
+- **Recharts**: Data visualization
 
-### Backend (Framework Ready)
-- **FastAPI**: High-performance Python web framework
-- **SQLite**: Lightweight database for development
-- **Pandas**: Data manipulation and analysis
-- **PyTorch**: Deep learning framework
-- **spaCy/NLTK**: Natural language processing
-- **Scikit-learn**: Machine learning utilities
+## 📈 Model Training
 
-## 📊 Data Requirements
+To train a new model from scratch:
 
-The system expects two CSV files in the `backend/data/` directory:
-
-1. **Dataset-SA.csv**: Sentiment-annotated product reviews
-   - Columns: `review_text`, `sentiment`, `product_id`
-
-2. **product_reviews.csv**: Product information
-   - Columns: `id`, `name`, `category`, `price`, `description`
-
-If datasets are not available, the application will display mock data for demonstration purposes.
-
-## 🤖 Machine Learning Models
-
-### Sentiment Analysis Pipeline
-1. **Text Preprocessing**: Clean and tokenize review text
-2. **Feature Extraction**: Extract product features and keywords
-3. **CNN+BiLSTM Model**: Deep learning classification
-4. **Confidence Scoring**: Probability-based sentiment scores
-
-### Recommendation Algorithm
-1. **Query Analysis**: Extract category and feature preferences
-2. **Review Filtering**: Find relevant product reviews
-3. **Sentiment Aggregation**: Calculate average sentiment scores
-4. **Feature Matching**: Match user preferences to product features
-5. **Ranking**: Score and sort products by relevance
-
-## 🔮 Usage Examples
-
-### Natural Language Queries
-- "Suggest me a laptop with good battery life and fast performance"
-- "I need a smartphone with excellent camera quality under $800"
-- "Looking for wireless headphones with noise cancellation"
-- "Find me a smartwatch for fitness tracking"
-
-### Expected Output
-- **Category Detection**: Laptop, Smartphone, etc.
-- **Feature Extraction**: battery, camera, performance, etc.
-- **Product Recommendations**: Top 5 products with sentiment scores
-- **Detailed Analytics**: Sentiment breakdown and confidence levels
-
-## 🚀 Deployment
-
-### Frontend Deployment
 ```bash
-# Build for production
-npm run build
+cd backend
 
-# Deploy to your preferred hosting service
-# (Vercel, Netlify, etc.)
+# Train CNN+BiLSTM model (recommended)
+python train_model.py
+
+# Train 1D CNN model
+python cnn1d_product_model.py
+
+# Train RNN model
+python rnn_product_model.py
 ```
 
-### Backend Deployment
-```bash
-# Install production dependencies
-pip install -r requirements.txt
+Training outputs:
+- Model weights: `backend/models/sentiment_model.pth`
+- Tokenizer: `backend/models/tokenizer.pkl`
+- Training curves: `*_training_curves.png`
 
-# Run with production ASGI server
-uvicorn main:app --host 0.0.0.0 --port 8000
+## 🔍 Key Features Explained
 
-# Or use Docker
-docker build -t ai-recommend-backend .
-docker run -p 8000:8000 ai-recommend-backend
-```
+### 1. Query Analysis
+- Extracts product category from natural language queries
+- Identifies key features mentioned (battery life, camera, display, etc.)
+- Returns confidence scores for predictions
+
+### 2. Sentiment Analysis
+- Three-class classification (Positive, Negative, Neutral)
+- Handles product reviews of varying lengths
+- Provides confidence scores for each prediction
+
+### 3. Recommendation Engine
+- Filters products by category
+- Ranks by sentiment scores
+- Considers feature matches
+- Returns top-N recommendations with explanations
+
+### 4. Multi-Model Architecture
+- Primary: CNN+BiLSTM for production use
+- Alternative: 1D CNN for faster inference
+- Experimental: RNN with attention for research
 
 ## 🤝 Contributing
 
+Contributions are welcome! Please feel free to submit a Pull Request.
+
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📄 License
+## 📝 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🎓 Educational Use
+## 👥 Authors
 
-This project is designed for learning and demonstrates:
-- Modern React development with TypeScript
-- Machine learning integration in web applications
-- Professional UI/UX design principles
-- Full-stack application architecture
-- Natural language processing techniques
+- Your Name - Initial work
 
-Perfect for students, developers, and anyone interested in AI-powered web applications!
+## 🙏 Acknowledgments
+
+- Dataset sources: Amazon product reviews, electronics reviews
+- Inspired by modern recommendation systems
+- Built with modern ML and web technologies
+
+## 📧 Contact
+
+For questions or feedback, please open an issue on GitHub.
+
+---
+
+**Note**: This project is for educational and research purposes. The trained models and datasets are used for demonstration only.

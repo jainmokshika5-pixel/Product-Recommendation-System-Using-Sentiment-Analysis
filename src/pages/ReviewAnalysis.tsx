@@ -20,13 +20,7 @@ interface SentimentResult {
   keywords: string[];
 }
 
-const sampleReviews = [
-  "This laptop has amazing battery life and the performance is incredible for the price!",
-  "The camera quality is decent but the battery drains too quickly for my needs.",
-  "Good product overall, meets expectations but nothing particularly special about it.",
-  "Terrible experience - constant crashes and poor build quality. Would not recommend.",
-  "Outstanding device! Fast, reliable, and the display quality is simply stunning."
-];
+// Sample reviews removed - using only real backend data
 
 export default function ReviewAnalysis() {
   const [review, setReview] = useState("");
@@ -60,63 +54,9 @@ export default function ReviewAnalysis() {
         };
       }
     } catch (error) {
-      console.error('Backend API not available, using fallback:', error);
+      console.error('Backend API Error:', error);
+      throw new Error('Unable to connect to sentiment analysis service. Please ensure the backend is running.');
     }
-
-    // Fallback rule-based analysis
-    const words = text.toLowerCase().split(/\s+/);
-    const positiveWords = ["amazing", "incredible", "outstanding", "excellent", "great", "good", "fast", "reliable", "stunning"];
-    const negativeWords = ["terrible", "poor", "bad", "crashes", "awful", "horrible", "slow", "broken"];
-    
-    let positiveScore = 0;
-    let negativeScore = 0;
-    const keywords: string[] = [];
-    
-    words.forEach(word => {
-      if (positiveWords.includes(word)) {
-        positiveScore++;
-        keywords.push(word);
-      }
-      if (negativeWords.includes(word)) {
-        negativeScore++;
-        keywords.push(word);
-      }
-    });
-    
-    const totalSentimentWords = positiveScore + negativeScore;
-    let sentiment: "positive" | "neutral" | "negative";
-    let score: number;
-    let confidence: number;
-    
-    if (totalSentimentWords === 0) {
-      sentiment = "neutral";
-      score = 5.0;
-      confidence = 0.6;
-    } else if (positiveScore > negativeScore) {
-      sentiment = "positive";
-      score = Math.min(10, 5 + (positiveScore / totalSentimentWords) * 5);
-      confidence = Math.min(0.95, 0.7 + (positiveScore / words.length) * 2);
-    } else if (negativeScore > positiveScore) {
-      sentiment = "negative";
-      score = Math.max(1, 5 - (negativeScore / totalSentimentWords) * 4);
-      confidence = Math.min(0.95, 0.7 + (negativeScore / words.length) * 2);
-    } else {
-      sentiment = "neutral";
-      score = 5.0;
-      confidence = 0.8;
-    }
-    
-    return {
-      sentiment,
-      confidence,
-      score,
-      breakdown: {
-        positive: sentiment === "positive" ? confidence : sentiment === "neutral" ? 0.5 : 1 - confidence,
-        neutral: sentiment === "neutral" ? confidence : 0.3,
-        negative: sentiment === "negative" ? confidence : sentiment === "neutral" ? 0.2 : 1 - confidence,
-      },
-      keywords: keywords.slice(0, 5)
-    };
   };
 
   const handleAnalyze = async () => {
@@ -154,10 +94,7 @@ export default function ReviewAnalysis() {
     }
   };
 
-  const handleSampleReview = (sample: string) => {
-    setReview(sample);
-    setResult(null);
-  };
+  // Sample review handler removed - using only real backend data
 
   return (
     <div className="min-h-screen bg-gradient-hero py-8">
@@ -291,27 +228,7 @@ export default function ReviewAnalysis() {
           </Card>
         )}
 
-        {/* Sample Reviews */}
-        <Card className="bg-card/50 border-0">
-          <CardHeader>
-            <CardTitle className="text-lg">Try These Sample Reviews</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-3">
-              {sampleReviews.map((sample, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  className="text-left p-4 h-auto whitespace-normal justify-start hover:bg-card-hover"
-                  onClick={() => handleSampleReview(sample)}
-                  disabled={isAnalyzing}
-                >
-                  "{sample}"
-                </Button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Sample reviews section removed - using only real backend data */}
       </div>
     </div>
   );

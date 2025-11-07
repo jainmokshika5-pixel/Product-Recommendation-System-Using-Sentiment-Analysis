@@ -7,12 +7,7 @@ import { Search, Loader2, Lightbulb } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
-const sampleQueries = [
-  "Suggest me a laptop with good battery life and fast performance",
-  "I need a smartphone with excellent camera quality",
-  "Looking for wireless headphones with noise cancellation",
-  "Find me a smartwatch for fitness tracking",
-];
+// Sample queries removed - using only real backend data
 
 export default function Query() {
   const [query, setQuery] = useState("");
@@ -55,10 +50,19 @@ export default function Query() {
 
       const data = await response.json();
       
+      console.log('API Response:', data);
+      console.log('Recommendations count:', data.recommendations?.length || 0);
+      
       setExtractedFeatures(data.query_analysis);
       
       // Navigate to results after a brief delay
       setTimeout(() => {
+        console.log('Navigating to results with state:', { 
+          query, 
+          analysis: data.query_analysis,
+          recommendations: data.recommendations,
+          totalProducts: data.total_products_analyzed
+        });
         navigate('/results', { state: { 
           query, 
           analysis: data.query_analysis,
@@ -70,25 +74,10 @@ export default function Query() {
     } catch (error) {
       console.error('API Error:', error);
       
-      // Fallback to mock data if backend is not available
-      const mockResponse = {
-        category: query.toLowerCase().includes('laptop') ? 'Laptop' : 
-                 query.toLowerCase().includes('smartphone') ? 'Smartphone' :
-                 query.toLowerCase().includes('headphones') ? 'Speakers' : 'Smartwatch',
-        features: extractFeaturesFromQuery(query),
-        confidence: 0.8
-      };
-      
-      setExtractedFeatures(mockResponse);
-      
-      setTimeout(() => {
-        navigate('/results', { state: { query, analysis: mockResponse } });
-      }, 1000);
-      
       toast({
-        title: "Using Demo Mode",
-        description: "Backend not available, showing sample data. Start the FastAPI server for full functionality.",
-        variant: "default"
+        title: "Backend Error",
+        description: "Unable to connect to the recommendation service. Please ensure the backend is running.",
+        variant: "destructive"
       });
     } finally {
       setIsAnalyzing(false);
@@ -114,9 +103,7 @@ export default function Query() {
     return features;
   };
 
-  const handleSampleQuery = (sample: string) => {
-    setQuery(sample);
-  };
+  // Sample query handler removed - using only real backend data
 
   return (
     <div className="min-h-screen bg-gradient-hero py-8">
@@ -199,27 +186,7 @@ export default function Query() {
           </Card>
         )}
 
-        {/* Sample Queries */}
-        <Card className="bg-card/50 border-0">
-          <CardHeader>
-            <CardTitle className="text-lg">Try These Sample Queries</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-3">
-              {sampleQueries.map((sample, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  className="text-left p-4 h-auto whitespace-normal justify-start hover:bg-card-hover"
-                  onClick={() => handleSampleQuery(sample)}
-                  disabled={isAnalyzing}
-                >
-                  {sample}
-                </Button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Sample queries section removed - using only real backend data */}
       </div>
     </div>
   );

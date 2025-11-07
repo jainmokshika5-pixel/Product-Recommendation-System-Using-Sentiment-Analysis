@@ -14,7 +14,7 @@ def test_datasets():
     datasets = []
     
     # Test electronics_balanced_10k.csv
-    electronics_path = "data/electronics_balanced_10k.csv"
+    electronics_path = "../data/electronics_balanced_10k.csv"
     if os.path.exists(electronics_path):
         df_electronics = pd.read_csv(electronics_path)
         print(f"\n📱 Electronics Dataset:")
@@ -37,7 +37,7 @@ def test_datasets():
         print(f"❌ Electronics dataset not found at {electronics_path}")
     
     # Test product_reviews.csv
-    reviews_path = "data/product_reviews.csv"
+    reviews_path = "../data/product_reviews.csv"
     if os.path.exists(reviews_path):
         df_reviews = pd.read_csv(reviews_path)
         print(f"\n📝 Product Reviews Dataset:")
@@ -59,7 +59,7 @@ def test_datasets():
         print(f"❌ Product reviews dataset not found at {reviews_path}")
     
     # Test sample dataset
-    sample_path = "data/sample_Dataset-SA.csv"
+    sample_path = "../data/sample_Dataset-SA.csv"
     if os.path.exists(sample_path):
         df_sample = pd.read_csv(sample_path)
         print(f"\n📊 Sample Dataset:")

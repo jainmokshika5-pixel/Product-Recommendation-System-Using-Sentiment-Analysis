@@ -6,11 +6,9 @@ Handles sentiment classification of product reviews
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import numpy as np
 from typing import Dict, Any, List
 import pickle
 import os
-from collections import Counter
 import re
 
 class CNNBiLSTMSentimentModel(nn.Module):
@@ -45,11 +43,11 @@ class CNNBiLSTMSentimentModel(nn.Module):
         # CNN layers
         conv_input = embedded.transpose(1, 2)  # (batch, embedding_dim, seq_len)
         conv1_out = F.relu(self.conv1(conv_input))
-        conv2_out = F.relu(self.conv2(conv_input))
-        conv3_out = F.relu(self.conv3(conv_input))
+        conv2_out = F.relu(self.conv2(conv1_out))  # Take conv1 output as input
+        conv3_out = F.relu(self.conv3(conv2_out))  # Take conv2 output as input
         
-        # Combine CNN outputs
-        conv_out = (conv1_out + conv2_out + conv3_out) / 3
+        # Use final conv layer output
+        conv_out = conv3_out
         conv_out = conv_out.transpose(1, 2)  # (batch, seq_len, 64)
         
         # BiLSTM
@@ -73,7 +71,7 @@ class SentimentAnalyzer:
         self.tokenizer = None
         self.label_map = {0: 'negative', 1: 'neutral', 2: 'positive'}
         self.max_length = 100
-        self.vocab_size = 10000
+        self.vocab_size = 8261
         self.is_model_loaded = False
         
         # Initialize with comprehensive rule-based fallback for all categories

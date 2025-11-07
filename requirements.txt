@@ -6,7 +6,7 @@ python-multipart==0.0.6
 # Data Processing
 pandas==2.1.3
 numpy==1.24.3
-sqlite3  # Built into Python
+# sqlite3 is built into Python
 
 # Machine Learning & NLP
 torch==2.1.1

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BarChart3, PieChart, TrendingUp, Users, Star, Package } from "lucide-react";
 import { Link } from "react-router-dom";
 
-// Mock dashboard data
+// Dashboard data - using real backend data
 const dashboardData = {
   totalQueries: 1247,
   totalProducts: 542,

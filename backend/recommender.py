@@ -1,39 +1,13 @@
 """
 Product recommendation system using sentiment analysis and feature matching
-Implements MLP-based ranking for product recommendations
 """
 
-import numpy as np
-import torch
-import torch.nn as nn
 from typing import List, Dict, Any
 from database import DatabaseManager
-
-class MLPRecommender(nn.Module):
-    """Simple MLP for product ranking"""
-    
-    def __init__(self, input_dim=10):
-        super(MLPRecommender, self).__init__()
-        self.network = nn.Sequential(
-            nn.Linear(input_dim, 128),
-            nn.ReLU(),
-            nn.Dropout(0.3),
-            nn.Linear(128, 64),
-            nn.ReLU(),
-            nn.Dropout(0.2),
-            nn.Linear(64, 32),
-            nn.ReLU(),
-            nn.Linear(32, 1),
-            nn.Sigmoid()
-        )
-    
-    def forward(self, x):
-        return self.network(x)
 
 class ProductRecommender:
     def __init__(self):
         self.db_manager = DatabaseManager()
-        self.model = MLPRecommender()
         
         # Feature importance weights
         self.feature_weights = {
@@ -88,9 +62,20 @@ class ProductRecommender:
         }
         return keywords.get(feature, [])
     
-    def calculate_category_match_score(self, product_category: str, target_category: str) -> float:
+    def calculate_category_match_score(self, product_category: str, target_category: str, product_name: str = "") -> float:
         """Calculate how well product category matches target category"""
         if product_category.lower() == target_category.lower():
+            # Additional check: if it's categorized as smartphone but looks like an accessory or other product, penalize it
+            if target_category.lower() == 'smartphones':
+                product_name_lower = product_name.lower()
+                if any(accessory_word in product_name_lower for accessory_word in 
+                      ['charger', 'holder', 'case', 'cable', 'adapter', 'adaptor', 'stand', 'earphone', 'headphone', 'bluetooth',
+                       'refrigerator', 'bicycle', 'bike', 'microwave', 'oven', 'washing', 'machine', 'ac', 'cooler',
+                       'speaker', 'sound', 'audio', 'watch', 'fitness', 'tracker', 'monitor', 'tv', 'television',
+                       'microphone', 'mic', 'sleeve', 'finger', 'thumb', 'game', 'gaming', 'controller', 'joystick',
+                       'keyboard', 'mouse', 'webcam', 'camera', 'lens', 'tripod', 'mount', 'bracket', 'clip',
+                       'power', 'usb', 'fast charge', 'charging', 'battery', 'cable', 'wire', 'bullets', 'earbuds']):
+                    return 0.3  # Penalize misclassified products
             return 1.0
         
         # Enhanced category similarities with better mapping
@@ -105,10 +90,6 @@ class ProductRecommender:
         
         target_lower = target_category.lower().strip()
         product_lower = product_category.lower().strip()
-        
-        # Direct match
-        if target_lower == product_lower:
-            return 1.0
         
         # Check similarity mappings
         for main_cat, aliases in category_similarities.items():
@@ -126,7 +107,7 @@ class ProductRecommender:
         
         # 1. Category match score (40% weight)
         category_score = self.calculate_category_match_score(
-            product.get('category', ''), target_category
+            product.get('category', ''), target_category, product.get('name', '')
         ) * 0.4
         
         # 2. Feature-based sentiment scores (50% weight)

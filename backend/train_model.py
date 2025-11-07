@@ -76,7 +76,7 @@ def load_and_preprocess_data():
     datasets = []
     
     # Load electronics_balanced_10k.csv
-    electronics_path = "data/electronics_balanced_10k.csv"
+    electronics_path = "../data/electronics_balanced_10k.csv"
     if os.path.exists(electronics_path):
         try:
             df_electronics = pd.read_csv(electronics_path)
@@ -92,7 +92,7 @@ def load_and_preprocess_data():
             print(f"⚠️ Error loading electronics dataset: {e}")
     
     # Load product_reviews.csv
-    reviews_path = "data/product_reviews.csv"
+    reviews_path = "../data/product_reviews.csv"
     if os.path.exists(reviews_path):
         try:
             df_reviews = pd.read_csv(reviews_path)
